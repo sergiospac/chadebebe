@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAP - Compartilhando Amor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --baby-pink: #FFE4E8;
+            --baby-blue: #E4F1FF;
+            --baby-green: #E4FFF4;
+            --baby-yellow: #FFF9E4;
+            --medium-pink: #FF9FB6;
+            --medium-blue: #7FB5FF;
+            --medium-green: #7FFFD4;
+            --medium-yellow: #FFE5B4;
+            --soft-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            --medium-shadow: 0 8px 20px rgba(64, 0, 64, 0.5);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--baby-pink) 0%, var(--baby-blue) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* background: url('https://placehold.co/600x400') center/cover; */
+            background: url('./assets/gap_fundo.jpeg') center/cover;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px;
+            padding: 30px;
+            background: rgba(192, 255, 192, 0.95);
+            border-radius: 24px;
+            box-shadow: var(--soft-shadow);
+            position: relative;
+            backdrop-filter: blur(10px);
+            max-height: 90vh;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--medium-blue);
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        h2 {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--medium-blue);
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 0.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            width: fit-content;
+
+        }
+
+        label {
+            font-family: 'Quicksand', sans-serif;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--baby-blue);
+            border-radius: 12px;
+            font-family: 'Open Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--medium-blue);
+            box-shadow: 0 0 0 3px rgba(127, 181, 255, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px 24px;
+            background: radial-gradient(#2196F3, #00BCD4);
+            color: yellow;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 10px;
+            box-shadow: var(--medium-shadow);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .enxoval-list {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 15px;
+            border-radius: 15px;
+            background: var(--baby-yellow);
+            margin: 20px 0;
+
+
+            border-radius: 24px;
+            box-shadow: var(--medium-shadow);
+            position: relative;
+            backdrop-filter: blur(10px);
+
+
+        }
+
+        .enxoval-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--soft-shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .enxoval-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .enxoval-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .enxoval-item-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .enxoval-item-info h4 {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--medium-blue);
+            margin: 0 0 5px 0;
+        }
+
+        .enxoval-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .enxoval-item-actions button {
+            width: auto;
+            padding: 8px 12px;
+            margin: 0;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        a {
+            color: var(--medium-blue);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        a:hover {
+            color: var(--medium-pink);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .enxoval-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .enxoval-item-info {
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Rest of your HTML content remains the same -->
+    <div class="container">
+        <div class="logo">
+            <h1>GAP</h1>
+            <p>Compartilhando Amor</p>
+        </div>
+
+
+
+
+            <!-- Seção de Seleção de Usuário -->
+        <section id="user-selection">
+            <h2>Bem-vindo ao Sistema de Doação</h2>
+            <button onclick="showPage('login-admin')">Entrar como Administrador</button>
+            <button onclick="showPage('login-user')">Entrar como Usuário Comum</button>
+        </section>
+
+        <!-- Página de Login do Administrador -->
+        <section id="login-admin">
+            <h2>Login Administrador</h2>
+            <div class="form-group">
+                <label for="email-admin">Email</label>
+                <input type="email" id="email-admin" placeholder="Digite seu email">
+            </div>
+            <div class="form-group">
+                <label for="password-admin">Senha</label>
+                <input type="password" id="password-admin" placeholder="Digite sua senha">
+            </div>
+            <button onclick="showPage('admin-dashboard')">Entrar</button>
+            <p><a href="#" onclick="showPage('user-selection')">Voltar</a></p>
+        </section>
+
+        <!-- Página de Login do Usuário Comum -->
+        <section id="login-user">
+            <h2>Login Usuário Comum</h2>
+            <div class="form-group">
+                <label for="email-user">Email</label>
+                <input type="email" id="email-user" placeholder="Digite seu email">
+            </div>
+            <div class="form-group">
+                <label for="password-user">Senha</label>
+                <input type="password" id="password-user" placeholder="Digite sua senha">
+            </div>
+            <button onclick="showPage('user-dashboard')">Entrar</button>
+            <p><a href="#" onclick="showPage('user-selection')">Voltar</a></p>
+        </section>
+
+        <!-- Painel do Administrador -->
+        <section id="admin-dashboard">
+            <h2>Painel do Administrador</h2>
+            <button onclick="showPage('manage-item-types')">Gerenciar Tipos de Itens</button>
+            <button onclick="showPage('manage-events')">Gerenciar Eventos</button>
+            <button onclick="showPage('manage-enxoval')">Gerenciar Enxovais</button>
+            <p><a href="#" onclick="showPage('user-selection')">Sair</a></p>
+        </section>
+
+        <!-- Painel do Usuário Comum -->
+        <section id="user-dashboard">
+            <h2>Painel do Usuário</h2>
+            <button onclick="showPage('list-enxovais')">Fazer Doações</button>
+            <button onclick="showPage('my-donations')">Minhas Doações</button>
+            <button onclick="showPage('item-donors')">Ver Doadores</button>
+            <p><a href="#" onclick="showPage('user-selection')">Sair</a></p>
+        </section>
+
+        <!-- Página de Gerenciamento de Tipos de Itens (Admin) -->
+        <section id="manage-item-types">
+            <h2>Tipos de Itens</h2>
+            <div class="form-group">
+                <label for="item-name">Nome do Item</label>
+                <input type="text" id="item-name" placeholder="Digite o nome do item">
+            </div>
+            <button>Adicionar Tipo de Item</button>
+            <p><a href="#" onclick="showPage('admin-dashboard')">Voltar</a></p>
+        </section>
+
+        <!-- Página de Gerenciamento de Eventos (Admin) -->
+        <section id="manage-events">
+            <h2>Eventos</h2>
+            <div class="form-group">
+                <label for="event-date">Data e Hora</label>
+                <input type="datetime-local" id="event-date">
+            </div>
+            <div class="form-group">
+                <label for="event-location">Local</label>
+                <input type="text" id="event-location" placeholder="Digite o local">
+            </div>
+            <button>Adicionar Evento</button>
+            <p><a href="#" onclick="showPage('admin-dashboard')">Voltar</a></p>
+        </section>
+
+        <!-- Página de Gerenciamento de Enxovais (Admin) -->
+        <section id="manage-enxoval">
+            <h2>Enxovais</h2>
+            <div class="form-group">
+                <label for="enxoval-name">Nome do Enxoval</label>
+                <input type="text" id="enxoval-name" placeholder="Digite o nome do enxoval">
+            </div>
+            <div class="form-group">
+                <label for="item-quantity">Quantidade de Itens Disponíveis</label>
+                <input type="number" id="item-quantity" placeholder="Digite a quantidade">
+            </div>
+            <button>Adicionar Enxoval</button>
+            <p><a href="#" onclick="showPage('admin-dashboard')">Voltar</a></p>
+        </section>
+
+        <!-- Página de Lista de Enxovais e Itens para Doação (Usuário Comum) -->
+        <section id="list-enxovais">
+            <h2>Doações para o Enxoval</h2>
+            <div class="enxoval-list">
+                <ul style="list-style-type: none; padding-inline: inherit;" class="enxoval-ul">
+                <!-- Este container será preenchido dinamicamente -->
+                </ul>
+            </div>
+            <button class="donate-btn">Confirmar Doação</button>
+        </section>
+
+        <!-- Página de Minhas Doações (Usuário Comum) -->
+        <section id="my-donations">
+            <h2>Minhas Doações</h2>
+            <p>Você ainda não fez nenhuma doação.</p>
+            <p><a href="#" onclick="showPage('user-dashboard')">Voltar</a></p>
+        </section>
+
+        <!-- Página de Lista de Itens com Doador (Usuário Comum) -->
+        <section id="item-donors">
+            <h2>Itens e Doadores</h2>
+            <div>Item A - Doador: João (3)</div>
+            <div>Item B - Doador: Maria (2)</div>
+            <p><a href="#" onclick="showPage('user-dashboard')">Voltar</a></p>
+        </section>
+
+        
+
+
+
+    </div>
+    <script>
+
+
+    // Exemplo de dados que podem ser extraídos do banco de dados (dinamicamente via backend no futuro)
+    const enxovalItems = [
+        {
+            id: 1,
+            nome: "Cobertor",
+            imagem: "https://marknetloja.s3.amazonaws.com/loja.donna.com.br/0/2/20/20569.g.jpg",
+            qtdDisponivel: 4,
+        },
+        {
+            id: 2,
+            nome: "Fraldas",
+            imagem: "https://lojasrede.vtexassets.com/arquivos/ids/329887-1000-auto/117984-1.webp",
+            qtdDisponivel: 5,
+        },
+        {
+            id: 3,
+            nome: "Mamadeira",
+            imagem: "https://tb2962.vtexassets.com/arquivos/ids/185610/Mamadeira-Lillo-Divertida-240ml-Bico-Redondo-Azul.jpg?v=638624359961930000",
+            qtdDisponivel: 1,
+        },
+        {
+            id: 4,
+            nome: "Chupeta",
+            imagem: "https://gutgut.com.br/cdn/shop/files/Chupeta-Buba-Tamanho-1-Comfort-Silicone-Ultra-Soft---Azul_0.webp?v=1695314612&width=2048",
+            qtdDisponivel: 2,
+        },
+        {
+            id: 5,
+            nome: "Manta",
+            imagem: "https://static.wixstatic.com/media/45d10e_f682badb29604479bbf1c5862389f6a2~mv2.jpg/v1/fill/w_220,h_220,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/45d10e_f682badb29604479bbf1c5862389f6a2~mv2.jpg",
+            qtdDisponivel: 3,
+        },
+        {
+            id: 6,
+            nome: "Conjunto de Pagão com nome grande",
+            imagem: "https://www.bebefofuxo.com.br/lojas/00020368/prod/60050.jpg",
+            qtdDisponivel: 2,
+        },
+        {
+            id: 7,
+            nome: "Cobertor",
+            imagem: "https://marknetloja.s3.amazonaws.com/loja.donna.com.br/0/2/20/20569.g.jpg",
+            qtdDisponivel: 4,
+        },
+        {
+            id: 8,
+            nome: "Fraldas",
+            imagem: "https://lojasrede.vtexassets.com/arquivos/ids/329887-1000-auto/117984-1.webp",
+            qtdDisponivel: 5,
+        },
+        {
+            id: 9,
+            nome: "Mamadeira",
+            imagem: "https://tb2962.vtexassets.com/arquivos/ids/185610/Mamadeira-Lillo-Divertida-240ml-Bico-Redondo-Azul.jpg?v=638624359961930000",
+            qtdDisponivel: 1,
+        },
+        {
+            id: 10,
+            nome: "Chupeta",
+            imagem: "https://gutgut.com.br/cdn/shop/files/Chupeta-Buba-Tamanho-1-Comfort-Silicone-Ultra-Soft---Azul_0.webp?v=1695314612&width=2048",
+            qtdDisponivel: 2,
+        },
+        {
+            id: 11,
+            nome: "Manta",
+            imagem: "https://static.wixstatic.com/media/45d10e_f682badb29604479bbf1c5862389f6a2~mv2.jpg/v1/fill/w_220,h_220,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/45d10e_f682badb29604479bbf1c5862389f6a2~mv2.jpg",
+            qtdDisponivel: 3,
+        },
+        {
+            id: 12,
+            nome: "Conjunto de Pagão com nome grande",
+            imagem: "https://www.bebefofuxo.com.br/lojas/00020368/prod/60050.jpg",
+            qtdDisponivel: 2,
+        },
+    ];
+
+    // Função para renderizar os itens na seção list-enxovais
+    function renderEnxovalItems() {
+        const listContainer = document.querySelector(".enxoval-ul");
+        listContainer.innerHTML = "";
+
+        enxovalItems.forEach((item) => {
+            const itemElement = document.createElement("li");
+            itemElement.className = "enxoval-item-list";
+            itemElement.innerHTML = `
+                <div class="enxoval-item">
+                    <img src="${item.imagem}" alt="${item.nome}">
+                    <div class="enxoval-item-info">
+                        <h4>${item.nome}</h4>
+                        <p>Disponível: ${item.qtdDisponivel}</p>
+                    </div>
+                    <div class="enxoval-item-actions">
+                        <button class="decrement-btn" ${item.qtdDisponivel === 0 ? "disabled" : ""}>-</button>
+                        <input type="number" class="quantity-input" value="0" min="0" max="${item.qtdDisponivel}" readonly>
+                        <button class="increment-btn" ${item.qtdDisponivel === 0 ? "disabled" : ""}>+</button>
+                    </div>
+                </div>
+            `;
+
+            listContainer.appendChild(itemElement);
+
+            const decrementBtn = itemElement.querySelector(".decrement-btn");
+            const incrementBtn = itemElement.querySelector(".increment-btn");
+            const quantityInput = itemElement.querySelector(".quantity-input");
+            const enxovalItem = itemElement.querySelector(".enxoval-item");
+
+            // Função para atualizar o background
+            const updateBackground = (value) => {
+                enxovalItem.style.background = parseInt(value) > 0 ? "#00f000" : "#fafafa";
+            };
+
+            decrementBtn.addEventListener("click", () => {
+                let currentValue = parseInt(quantityInput.value);
+                if (currentValue > 0) {
+                    currentValue -= 1;
+                    quantityInput.value = currentValue;
+                    updateBackground(currentValue);
+                }
+            });
+
+            incrementBtn.addEventListener("click", () => {
+                let currentValue = parseInt(quantityInput.value);
+                if (currentValue < item.qtdDisponivel) {
+                    currentValue += 1;
+                    quantityInput.value = currentValue;
+                    updateBackground(currentValue);
+                }
+            });
+        });
+    }
+
+    function showPage(pageId) {
+        // Oculta todas as seções
+        document.querySelectorAll('section').forEach(section => {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
+
+        // Mostra apenas a seção selecionada
+        const targetSection = document.getElementById(pageId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            targetSection.classList.add('active');
+        }
+    }
+
+    // Inicializa mostrando apenas a seção inicial
+    document.addEventListener('DOMContentLoaded', () => {
+        showPage('user-selection');
+        renderEnxovalItems();
+    });    
+
+
+
+    </script>
+</body>
+</html>
