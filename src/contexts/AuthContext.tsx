@@ -1,107 +1,103 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { AuthContextData, Usuario } from '../models/interfaces';
-import { RepositoryFactory } from '../services/repository/RepositoryFactory';
+"use client";
 
-// Criação do contexto com valor inicial padrão
-const AuthContext = createContext<AuthContextData>({
-  usuario: null,
-  loading: true,
-  login: async () => false,
-  logout: () => {},
-  registrar: async () => false
-});
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-// Hook personalizado para facilitar o uso do contexto
-export const useAuth = () => useContext(AuthContext);
-
-// Interface para as propriedades do provider
-interface AuthProviderProps {
-  children: React.ReactNode;
+interface UsuarioLogado {
+  id: number;
+  nome: string;
+  email: string;
+  tel: string;
+  adm: boolean;
 }
 
-// Provider do contexto de autenticação
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+interface AuthContextValue {
+  usuario: UsuarioLogado | null;
+  loading: boolean;
+  registrar: (dados: {
+    nome: string;
+    email: string;
+    senha: string;
+    tel: string;
+  }) => Promise<{ success: boolean; message?: string }>;
+  login: (dados: { email: string; senha: string }) => Promise<{ success: boolean; message?: string }>;
+  logout: () => Promise<void>;
+  refresh: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [usuario, setUsuario] = useState<UsuarioLogado | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Carregar usuário do localStorage ao iniciar
-  useEffect(() => {
-    const storedUser = localStorage.getItem('@Chadebebe:usuario');
-    
-    if (storedUser) {
-      setUsuario(JSON.parse(storedUser));
+  const refresh = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/me");
+      if (!response.ok) {
+        setUsuario(null);
+        return;
+      }
+      const data = await response.json();
+      setUsuario(data.usuario);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
+  };
+
+  useEffect(() => {
+    refresh();
   }, []);
 
-  // Função para realizar login
-  const login = async (email: string, senha: string): Promise<boolean> => {
-    try {
-      setLoading(true);
-      const usuarioRepository = RepositoryFactory.createUsuarioRepository();
-      const usuarioAutenticado = await usuarioRepository.authenticate(email, senha);
-      
-      if (usuarioAutenticado) {
-        setUsuario(usuarioAutenticado);
-        localStorage.setItem('@Chadebebe:usuario', JSON.stringify(usuarioAutenticado));
-        return true;
-      }
-      
-      return false;
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      return false;
-    } finally {
-      setLoading(false);
+  const registrar: AuthContextValue["registrar"] = async (dados) => {
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return { success: false, message: data.message ?? "Erro ao registrar" };
     }
+
+    return { success: true, message: data.message };
   };
 
-  // Função para fazer logout
-  const logout = (): void => {
+  const login: AuthContextValue["login"] = async ({ email, senha }) => {
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, senha }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return { success: false, message: data.message ?? "Falha no login" };
+    }
+
+    setUsuario(data.usuario);
+    return { success: true };
+  };
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+    });
     setUsuario(null);
-    localStorage.removeItem('@Chadebebe:usuario');
-  };
-
-  // Função para registrar novo usuário
-  const registrar = async (novoUsuario: Usuario): Promise<boolean> => {
-    try {
-      setLoading(true);
-      const usuarioRepository = RepositoryFactory.createUsuarioRepository();
-      
-      // Verificar se já existe usuário com este email
-      const usuarioExistente = await usuarioRepository.findByEmail(novoUsuario.email);
-      
-      if (usuarioExistente) {
-        return false;
-      }
-      
-      // Todos os novos usuários são comuns por padrão
-      const usuarioCriado = await usuarioRepository.create({
-        ...novoUsuario,
-        adm: false
-      });
-      
-      if (usuarioCriado) {
-        // Omitir senha do objeto armazenado no estado
-        const { senha: _, ...usuarioSemSenha } = usuarioCriado;
-        setUsuario(usuarioSemSenha as Usuario);
-        localStorage.setItem('@Chadebebe:usuario', JSON.stringify(usuarioSemSenha));
-        return true;
-      }
-      
-      return false;
-    } catch (error) {
-      console.error('Erro ao registrar usuário:', error);
-      return false;
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, loading, login, logout, registrar }}>
+    <AuthContext.Provider value={{ usuario, loading, registrar, login, logout, refresh }}>
       {children}
     </AuthContext.Provider>
   );
-}; 
+};
+
+export const useAuth = (): AuthContextValue => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth deve ser utilizado dentro de AuthProvider");
+  }
+  return context;
+};

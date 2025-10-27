@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+generator clientDefault {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id    Int     @id @default(autoincrement())
+  nome  String
+  email String  @unique
+  senha String?
+  tel   String
+  adm   Boolean @default(false)
+  validado Boolean @default(false)
+  tokenRecuperacao String?
+  tokenExpira DateTime?
+
+  doacoes Doacao[]
+  tokensValidacao TokenValidacao[]
+}
+
+model Evento {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  dataHora DateTime?
+  local    String?
+
+  enxovais Enxoval[]
+}
+
+model Enxoval {
+  id       Int      @id @default(autoincrement())
+  nome     String?
+  idEvento Int
+
+  evento  Evento       @relation(fields: [idEvento], references: [id], onDelete: Cascade)
+  itens   ItemEnxoval[]
+  doacoes Doacao[]     @relation("EnxovalDoacoes")
+}
+
+model TipoItem {
+  id     Int      @id @default(autoincrement())
+  nome   String
+  imagem String?
+  ativo  Boolean @default(false)
+
+  itens ItemEnxoval[]
+}
+
+model ItemEnxoval {
+  id            Int        @id @default(autoincrement())
+  qtdDisponivel Int
+  idEnxoval     Int
+  idTipoItem    Int
+
+  enxoval  Enxoval   @relation(fields: [idEnxoval], references: [id], onDelete: Cascade)
+  tipoItem TipoItem  @relation(fields: [idTipoItem], references: [id], onDelete: Restrict)
+  doacoes  Doacao[]
+}
+
+model Doacao {
+  id            Int        @id @default(autoincrement())
+  qtd           Int
+  situacao      Int
+  data          DateTime?
+  idUsuario     Int
+  idItemEnxoval Int?
+  idEnxoval     Int?
+
+  usuario Usuario     @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+  item    ItemEnxoval? @relation(fields: [idItemEnxoval], references: [id], onDelete: SetNull)
+  enxoval Enxoval?     @relation("EnxovalDoacoes", fields: [idEnxoval], references: [id], onDelete: Cascade)
+}
+
+model TokenValidacao {
+  id             Int      @id @default(autoincrement())
+  usuarioId      Int
+  tipo           String
+  token          String   @unique
+  expiracao      DateTime
+  utilizadoEm    DateTime?
+  criadoEm       DateTime @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+}
