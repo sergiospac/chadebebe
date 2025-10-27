@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className={styles.homeContainer}>
       <section className={styles.hero}>
-        <h1 className={styles.heroTitle}>Bem-vindo ao Chadebebe</h1>
+        <h1 className={styles.heroTitle}>Bem-vindo ao Enxoval Solidário GAP</h1>
         <p className={styles.heroSubtitle}>
           Gerencie eventos, enxovais e doações com carinho.
         </p>

@@ -25,7 +25,7 @@ async function run() {
     ]);
 
     await page.waitForFunction(
-      () => document.body.innerText.includes("Bem-vindo ao Chadebebe"),
+      () => document.body.innerText.includes("Bem-vindo ao Enxoval Solidário GAP"),
       { timeout: 15000 },
     );
 

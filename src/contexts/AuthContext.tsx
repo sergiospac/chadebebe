@@ -19,7 +19,7 @@ interface AuthContextValue {
     senha: string;
     tel: string;
   }) => Promise<{ success: boolean; message?: string }>;
-  login: (dados: { email: string; senha: string }) => Promise<{ success: boolean; message?: string }>;
+  login: (dados: { email: string; senha: string }) => Promise<{ success: boolean; message?: string; usuario?: UsuarioLogado }>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setUsuario(data.usuario);
-    return { success: true };
+    return { success: true, usuario: data.usuario };
   };
 
   const logout = async () => {

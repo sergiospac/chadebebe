@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import Field from "@/components/forms/Field";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,8 +13,9 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const { login } = useAuth();
-  const [email, setEmail] = useState("admin@gap.org");
-  const [senha, setSenha] = useState("admin123");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +29,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     if (!result.success) {
       setError(result.message ?? "Falha no login");
     } else {
-      onLoginSuccess?.();
+      // Redirecionar baseado no tipo de usuário
+      if (result.usuario?.adm) {
+        router.push("/admin/pendentes");
+      } else {
+        router.push("/");
+      }
     }
 
     setLoading(false);

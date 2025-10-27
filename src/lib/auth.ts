@@ -15,8 +15,8 @@ interface TokenPayload {
 
 export const getTokenFromCookie = async () => {
   const cookieStore = await cookies();
-  const token = (cookieStore as any).get?.("chadebebe_token")?.value ?? null;
-  return token;
+  const tokenCookie = cookieStore.get("chadebebe_token");
+  return tokenCookie?.value ?? null;
 };
 
 export const verifyAuthToken = (token: string) => {

@@ -8,7 +8,8 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleSuccess = () => {
-    router.push("/");
+    // Redirecionar baseado na resposta do login
+    router.push("/admin/pendentes");
   };
 
   return (
