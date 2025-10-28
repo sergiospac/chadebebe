@@ -1,16 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 import Field from "@/components/forms/Field";
 
-export default function PasswordResetPage() {
+function PasswordResetForm() {
+  const searchParams = useSearchParams();
   const [token, setToken] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tokenParam = searchParams.get("token");
+    if (tokenParam) {
+      setToken(tokenParam);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -52,11 +61,12 @@ export default function PasswordResetPage() {
             {error && <div className="alert-error">{error}</div>}
 
             <Field
-              label="Token recebido"
+              label={token ? "Token (do link do email)" : "Token recebido"}
               name="token"
               value={token}
               onChange={(event) => setToken(event.target.value)}
               required
+              placeholder={token ? "Token carregado do link do email" : "Cole o token recebido por email"}
             />
 
             <Field
@@ -79,5 +89,13 @@ export default function PasswordResetPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function PasswordResetPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <PasswordResetForm />
+    </Suspense>
   );
 }

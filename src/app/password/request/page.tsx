@@ -28,10 +28,8 @@ export default function PasswordRequestPage() {
     if (!response.ok) {
       setError(data.message ?? "Erro ao solicitar recuperação");
     } else {
-      setMessage(data.message ?? "Token gerado. (simulação) Anote o token exibido abaixo.");
-      if (data.token) {
-        setMessage(`${data.message} Token: ${data.token}`);
-      }
+      // Não mostrar token na UI - só no console do servidor
+      setMessage(data.message);
     }
 
     setLoading(false);

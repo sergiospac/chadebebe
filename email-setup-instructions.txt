@@ -1,0 +1,85 @@
+=====================================================
+  CONFIGURAÇÃO GMAIL PARA CHADEBEBE - PASSOS DETALHADOS
+=====================================================
+
+📧 EMAIL: enxoval.org@gmail.com
+🔑 SENHA ATUAL: Wilson#1933
+
+-----------------------------------------------------
+PASSO 1: Habilite Autenticação em Duas Etapas
+-----------------------------------------------------
+1. Acesse: https://myaccount.google.com/security
+2. Faça login com: enxoval.org@gmail.com
+3. Vá em "Autenticação em duas etapas"
+4. Clique em "Começar"
+5. Siga as instruções para configurar
+
+-----------------------------------------------------
+PASSO 2: Crie uma Senha de App (App Password)
+-----------------------------------------------------
+1. Acesse: https://myaccount.google.com/apppasswords
+2. Selecione:
+   - "App": Outro (Nome personalizado)
+   - "Nome": Chadebebe Dev
+3. Clique em "Gerar"
+4. Copie a senha de 16 caracteres (sem espaços)
+
+Exemplo de senha gerada: abcd efgh ijkl mnop
+Você usará (SEM espaços): abcdefghijklmnop
+
+-----------------------------------------------------
+PASSO 3: Atualize o arquivo .env.development
+-----------------------------------------------------
+Execute no terminal:
+
+sed -i '' 's|SMTP_PASS="Wilson#1933"|SMTP_PASS="COLE_A_SENHA_DE_16_CARACTERES_AQUI"|' .env.development
+
+Ou edite manualmente o arquivo e substitua:
+SMTP_PASS="Wilson#1933"
+Por:
+SMTP_PASS="abcdefghijklmnop"  (use a senha REAL gerada)
+
+-----------------------------------------------------
+PASSO 4: Verifique se está habilitado
+-----------------------------------------------------
+Execute:
+
+cat .env.development | grep -E "SMTP_USER|SMTP_PASS|USE_REAL_EMAIL"
+
+Deve mostrar:
+SMTP_USER="enxoval.org@gmail.com"
+SMTP_PASS="abcdefghijklmnop"    (sua senha real)
+USE_REAL_EMAIL="true"
+
+-----------------------------------------------------
+PASSO 5: Teste o envio de email
+-----------------------------------------------------
+1. Inicie o servidor:
+   npm run dev
+
+2. Acesse: http://localhost:3000/password/request
+3. Digite um email cadastrado no sistema
+4. Clique em "Enviar instruções"
+5. Verifique:
+   - Console do terminal (sem erros)
+   - Inbox de enxoval.org@gmail.com
+   - Caixa de entrada do destinatário
+
+-----------------------------------------------------
+TROUBLESHOOTING
+-----------------------------------------------------
+❌ Erro "Invalid login" ou "EAUTH":
+   → A senha está errada ou 2FA não está habilitado
+
+❌ Email não chega:
+   → Verifique spam/lixo eletrônico
+   → Verifique se o email destinatário existe
+
+❌ Erro "Less secure app":
+   → Gmail não permite mais senhas de app não seguras
+   → Use App Password (descrito acima)
+
+📌 IMPORTANTE: Não use SMTP_PASS="Wilson#1933" no .env
+   Este é um exemplo. Use APENAS App Passwords geradas!
+
+=====================================================

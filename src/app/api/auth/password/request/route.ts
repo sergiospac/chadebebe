@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import prisma, { createRandomToken } from "@/lib/prisma";
+import { sendPasswordResetEmail } from "@/lib/email";
 
 const requestSchema = z.object({ email: z.string().email() });
 
@@ -15,7 +16,10 @@ export async function POST(request: Request) {
     const usuario = await prisma.usuario.findUnique({ where: { email } });
 
     if (!usuario) {
-      return NextResponse.json({ message: "Se usuário existir, receberá instruções." });
+      // Não revela se o email existe ou não
+      return NextResponse.json({ 
+        message: "Se o email estiver cadastrado, você receberá instruções em breve." 
+      });
     }
 
     const token = createRandomToken();
@@ -29,10 +33,21 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({
-      message: "Token de recuperação gerado. (simulação) repasse o token para o usuário.",
-      token,
-    });
+    // Enviar email com link de recuperação
+    try {
+      await sendPasswordResetEmail(email, token);
+      return NextResponse.json({
+        message: "Instruções de recuperação foram enviadas para seu email.",
+      });
+    } catch (emailError) {
+      console.error("Erro ao enviar email:", emailError);
+      // Fallback: ainda fornece o token para desenvolvimento
+      return NextResponse.json({
+        message: "Erro ao enviar email. Token de desenvolvimento:",
+        token,
+        developmentMode: true,
+      });
+    }
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
